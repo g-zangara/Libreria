@@ -29,7 +29,7 @@ public class Libro {
         this.autore = autore;
         this.isbn = isbn;
         this.genere = genere;
-        setValutazione(valutazione); // Usa il setter per validare il valore
+        this.valutazione = valutazione;
         this.statoLettura = statoLettura;
     }
 
@@ -95,39 +95,8 @@ public class Libro {
         }
     }
 
-    /**
-     * Imposta la valutazione del libro, assicurando che sia compresa tra 0 e 5.
-     * 0 rappresenta "da valutare", mentre 1-5 rappresentano le stelle.
-     *
-     * @param valutazione Valutazione da assegnare (0 = da valutare, da 1 a 5 stelle)
-     */
     public void setValutazione(int valutazione) {
-        if (valutazione < 0) {
-            this.valutazione = 0;
-        } else if (valutazione > 5) {
-            this.valutazione = 5;
-        } else {
-            this.valutazione = valutazione;
-        }
-    }
-
-    /**
-     * Imposta la valutazione del libro a partire da una stringa.
-     *
-     * @param valutazioneString Stringa rappresentante la valutazione
-     */
-    public void setValutazioneFromString(String valutazioneString) {
-        if (valutazioneString == null || valutazioneString.trim().isEmpty() ||
-                "Da valutare".equalsIgnoreCase(valutazioneString.trim())) {
-            this.valutazione = 0;
-        } else {
-            try {
-                int val = Integer.parseInt(valutazioneString.trim());
-                setValutazione(val);
-            } catch (NumberFormatException e) {
-                this.valutazione = 0;
-            }
-        }
+        this.valutazione = valutazione;
     }
 
     public StatoLettura getStatoLettura() {
@@ -136,26 +105,6 @@ public class Libro {
 
     public void setStatoLettura(StatoLettura statoLettura) {
         this.statoLettura = statoLettura;
-    }
-
-    /**
-     * Converte lo stato di lettura da stringa all'enumerazione StatoLettura.
-     * Utile per la deserializzazione da formato testuale.
-     *
-     * @param statoLetturaString Stringa rappresentante lo stato di lettura
-     */
-    public void setStatoLetturaFromString(String statoLetturaString) {
-        try {
-            this.statoLettura = StatoLettura.valueOf(statoLetturaString);
-        } catch (IllegalArgumentException e) {
-            // Prova a convertire usando la descrizione
-            try {
-                this.statoLettura = StatoLettura.fromString(statoLetturaString);
-            } catch (IllegalArgumentException ex) {
-                // Default allo stato "DA_LEGGERE" se non valido
-                this.statoLettura = StatoLettura.DA_LEGGERE;
-            }
-        }
     }
 
     /**
