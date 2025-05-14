@@ -290,4 +290,12 @@ public class LibroController {
                     "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * Pulisce la libreria, rimuovendo tutti i libri presenti.
+     */
+    public void pulisciLibreria() {
+        gestoreLibreria.pulisciLibreria();
+        aggiornaTabella();
+    }
 }

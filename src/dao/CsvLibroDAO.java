@@ -86,7 +86,7 @@ public class CsvLibroDAO implements LibroDAO {
                     if (libro == null) {
                         // Libro con formato CSV non valido
                         errori.add("Riga " + numeroRiga + ": formato CSV non valido");
-                    } else if (libro.isValid()) {
+                    } else if (!libro.isValid()) {
                         // Libro con dati incompleti o invalidi
                         errori.add("Riga " + numeroRiga + " (" +
                                 (libro.getTitolo().isEmpty() ? "titolo mancante" : libro.getTitolo()) +
@@ -167,25 +167,29 @@ public class CsvLibroDAO implements LibroDAO {
                 valutazione = 0; // "da valutare"
             } else {
                 valutazione = Integer.parseInt(valutazioneStr);
-                // Valida che sia tra 0 e 5
-                if (valutazione < 0) valutazione = 0;
-                if (valutazione > 5) valutazione = 5;
+                // Validazione rigorosa del range
+                if (valutazione < 0 || valutazione > 5) {
+                    System.err.println("La valutazione deve essere tra 0 e 5, trovato: " + valutazione);
+                    return null;
+                }
             }
         } catch (NumberFormatException e) {
-            valutazione = 0; // Default a "da valutare" se non valido
+            System.err.println("La valutazione deve essere un numero intero tra 0 e 5 o 'Da valutare', trovato: " + valutazioneStr);
+            return null;
         }
 
-        // Gestione dello stato di lettura con maggiore flessibilità
+        // Gestione dello stato di lettura con validazione rigorosa
         StatoLettura statoLettura;
         String statoLetturaStr = fields.get(5).trim();
         try {
             statoLettura = StatoLettura.valueOf(statoLetturaStr);
         } catch (IllegalArgumentException e) {
-            // Prova a convertire usando la descrizione
             try {
+                // Prova a convertire usando la descrizione
                 statoLettura = StatoLettura.fromString(statoLetturaStr);
             } catch (IllegalArgumentException ex) {
-                statoLettura = StatoLettura.DA_LEGGERE;
+                System.err.println("Stato di lettura non valido: " + statoLetturaStr);
+                return null;
             }
         }
 
@@ -193,7 +197,7 @@ public class CsvLibroDAO implements LibroDAO {
         Libro libro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
 
         // Verifica che tutti i campi obbligatori siano validi
-        if (libro.isValid()) {
+        if (!libro.isValid()) {
             System.err.println("CSV libro non valido: " + csvLine);
             return null;
         }

@@ -279,4 +279,12 @@ public class GestoreLibreria {
                 .sorted()
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Pulisce completamente la libreria rimuovendo tutti i libri.
+     * Questa operazione non può essere annullata.
+     */
+    public void pulisciLibreria() {
+        libri.clear();
+    }
 }

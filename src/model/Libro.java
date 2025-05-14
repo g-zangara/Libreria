@@ -212,8 +212,8 @@ public class Libro {
      * @return true se tutti i campi sono validi, false altrimenti
      */
     public boolean isValid() {
-        return !isValidTitolo() || !isValidAutore() ||
-                !isValidIsbn() || !isValidGenere();
+        return isValidTitolo() && isValidAutore() &&
+                isValidIsbn() && isValidGenere();
     }
 
     @Override

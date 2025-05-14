@@ -92,7 +92,7 @@ public class JsonLibroDAO implements LibroDAO {
                     if (libro == null) {
                         // Libro non valido
                         errori.add("Libro #" + indice + ": formato JSON non valido");
-                    } else if (libro.isValid()) {
+                    } else if (!libro.isValid()) {
                         // Libro con dati incompleti o invalidi
                         errori.add("Libro #" + indice + " (" +
                                 (libro.getTitolo().isEmpty() ? "titolo mancante" : libro.getTitolo()) +
@@ -172,7 +172,7 @@ public class JsonLibroDAO implements LibroDAO {
         String isbn = "";
         String genere = "";
         int valutazione = 0; // Default a "da valutare"
-        StatoLettura statoLettura = StatoLettura.DA_LEGGERE;
+        StatoLettura statoLettura = StatoLettura.DA_LEGGERE; // Default a "da leggere"
 
         // Suddivide le coppie chiave-valore
         String[] pairs = jsonObject.split(",");
@@ -206,12 +206,15 @@ public class JsonLibroDAO implements LibroDAO {
                                 valutazione = 0;
                             } else {
                                 valutazione = Integer.parseInt(value);
-                                // Valida che sia tra 0 e 5
-                                if (valutazione < 0) valutazione = 0;
-                                if (valutazione > 5) valutazione = 5;
+                                // Validazione rigorosa del range
+                                if (valutazione < 0 || valutazione > 5) {
+                                    System.err.println("La valutazione deve essere tra 0 e 5, trovato: " + valutazione);
+                                    return null;
+                                }
                             }
                         } catch (NumberFormatException e) {
-                            valutazione = 0; // Default a "da valutare" se non valido
+                            System.err.println("La valutazione deve essere un numero intero tra 0 e 5 o 'Da valutare', trovato: " + value);
+                            return null;
                         }
                         break;
                     case "statoLettura":
@@ -222,7 +225,8 @@ public class JsonLibroDAO implements LibroDAO {
                             try {
                                 statoLettura = StatoLettura.fromString(value);
                             } catch (IllegalArgumentException ex) {
-                                statoLettura = StatoLettura.DA_LEGGERE;
+                                System.err.println("Stato di lettura non valido: " + value);
+                                return null;
                             }
                         }
                         break;
@@ -234,7 +238,7 @@ public class JsonLibroDAO implements LibroDAO {
         Libro libro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
 
         // Verifica che tutti i campi obbligatori siano validi
-        if (libro.isValid()) {
+        if (!libro.isValid()) {
             System.err.println("JSON libro non valido: " + jsonObject);
             return null;
         }

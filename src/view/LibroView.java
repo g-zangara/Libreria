@@ -32,15 +32,9 @@ public class LibroView extends JFrame {
     private JComboBox<String> comboStatoLettura;
     private JComboBox<String> comboValutazione;
     private JComboBox<String> comboOrdinamento;
-    private JButton btnAggiungi;
-    private JButton btnModifica;
-    private JButton btnElimina;
-    private JButton btnCerca;
-    private JButton btnResetFiltri;
-    private JButton btnSalvaJSON;
-    private JButton btnSalvaCSV;
-    private JButton btnCaricaJSON;
-    private JButton btnCaricaCSV;
+    private JButton btnAggiungi, btnModifica, btnElimina;
+    private JButton btnCerca, btnResetFiltri;
+    private JButton btnSalvaJSON, btnSalvaCSV, btnCaricaJSON, btnCaricaCSV, btnPulisciLibreria;
 
     /**
      * Costruttore che inizializza la vista.
@@ -65,7 +59,7 @@ public class LibroView extends JFrame {
         // Impostazioni base della finestra
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 700);
-        setMinimumSize(new Dimension(1000, 600));
+        setMinimumSize(new Dimension(1150, 600));
         setLocationRelativeTo(null);
 
         // Layout principale
@@ -73,6 +67,20 @@ public class LibroView extends JFrame {
         ((JComponent) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
 
         // Pannello superiore per ricerca e filtri con scrollbar
+        JPanel panelSuperiore = creaPanelSuperiore();
+
+        // Pannello centrale per la tabella dei libri
+        JPanel panelCentrale = creaPanelCentrale();
+
+        // Pannello inferiore per i pulsanti delle operazioni
+        JPanel panelInferiore = creaPanelInferiore();
+
+        add(panelSuperiore, BorderLayout.NORTH);
+        add(panelCentrale, BorderLayout.CENTER);
+        add(panelInferiore, BorderLayout.SOUTH);
+    }
+
+    private JPanel creaPanelSuperiore() {
         JPanel panelSuperiore = new JPanel(new BorderLayout(10, 10));
 
         // Pannello di ricerca
@@ -82,7 +90,7 @@ public class LibroView extends JFrame {
         campoCerca = new JTextField(15);
         comboTipoCerca = new JComboBox<>(new String[]{"Titolo", "Autore", "ISBN"});
         btnCerca = new JButton("Cerca");
-        btnCerca.addActionListener(e -> controller.cercaLibri(campoCerca.getText(), (String)comboTipoCerca.getSelectedItem()));
+        btnCerca.addActionListener(e -> controller.cercaLibri(campoCerca.getText(), (String) comboTipoCerca.getSelectedItem()));
 
         panelRicerca.add(new JLabel("Cerca per:"));
         panelRicerca.add(comboTipoCerca);
@@ -151,7 +159,10 @@ public class LibroView extends JFrame {
         panelSuperiore.add(panelRicerca, BorderLayout.NORTH);
         panelSuperiore.add(scrollPanelSuperiore, BorderLayout.CENTER);
 
-        // Pannello centrale per la tabella dei libri
+        return panelSuperiore;
+    }
+
+    private JPanel creaPanelCentrale() {
         JPanel panelCentrale = new JPanel(new BorderLayout());
 
         // Crea la tabella con il modello dati
@@ -178,7 +189,10 @@ public class LibroView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tabellaLibri);
         panelCentrale.add(scrollPane, BorderLayout.CENTER);
 
-        // Pannello inferiore per i pulsanti delle operazioni con scrollbar
+        return panelCentrale;
+    }
+
+    private JPanel creaPanelInferiore() {
         JPanel panelInferiore = new JPanel(new BorderLayout(10, 10));
 
         // Pulsanti per le operazioni sui libri
@@ -218,6 +232,10 @@ public class LibroView extends JFrame {
         btnCaricaCSV = new JButton("Carica CSV");
         btnCaricaCSV.addActionListener(e -> caricaFile("CSV"));
 
+        //Pulsante per pulire la libreria
+        btnPulisciLibreria = new JButton("Pulisci Libreria");
+        btnPulisciLibreria.addActionListener(e -> pulisciLibreria());
+
         panelPersistenza.add(btnSalvaJSON);
         panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnSalvaCSV);
@@ -225,6 +243,8 @@ public class LibroView extends JFrame {
         panelPersistenza.add(btnCaricaJSON);
         panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnCaricaCSV);
+        panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
+        panelPersistenza.add(btnPulisciLibreria);
 
         // Contenitore per i pulsanti
         JPanel bottonePulsantiContainer = new JPanel(new BorderLayout());
@@ -239,10 +259,7 @@ public class LibroView extends JFrame {
 
         panelInferiore.add(scrollPanelInferiore, BorderLayout.CENTER);
 
-        // Aggiungi i pannelli al layout principale
-        add(panelSuperiore, BorderLayout.NORTH);
-        add(panelCentrale, BorderLayout.CENTER);
-        add(panelInferiore, BorderLayout.SOUTH);
+        return panelInferiore;
     }
 
     /**
@@ -548,7 +565,7 @@ public class LibroView extends JFrame {
      * Ottiene la valutazione selezionata nella combo box.
      *
      * @return Valutazione selezionata o -1 se "Tutti" è selezionato (nessun filtro),
-     *         0 se "da valutare" è selezionato, altrimenti il valore numerico (1-5)
+     * 0 se "da valutare" è selezionato, altrimenti il valore numerico (1-5)
      */
     public int getValutazioneSelezionata() {
         String valutazione = (String) comboValutazione.getSelectedItem();
@@ -572,5 +589,26 @@ public class LibroView extends JFrame {
      */
     public String getOrdinamentoSelezionato() {
         return (String) comboOrdinamento.getSelectedItem();
+    }
+
+    /**
+     * Pulisce la libreria dopo conferma dell'utente.
+     * Rimuove tutti i libri dalla libreria.
+     */
+    private void pulisciLibreria() {
+        int conferma = JOptionPane.showConfirmDialog(this,
+                "Sei sicuro di voler pulire la libreria? Tutti i libri saranno rimossi.\n" +
+                        "Questa operazione non può essere annullata.",
+                "Conferma pulizia libreria",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (conferma == JOptionPane.YES_OPTION) {
+            controller.pulisciLibreria();
+            JOptionPane.showMessageDialog(this,
+                    "La libreria è stata pulita con successo.",
+                    "Operazione completata",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
