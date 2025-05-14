@@ -17,8 +17,8 @@ import javax.swing.JOptionPane;
  */
 public class LibroController {
 
-    private GestoreLibreria gestoreLibreria;
-    private LibroView view;
+    private final GestoreLibreria gestoreLibreria;
+    private final LibroView view;
 
     /**
      * Costruttore che inizializza il controller con il gestore libreria e la vista.
@@ -151,7 +151,7 @@ public class LibroController {
         String genereSelezionato = view.getGenereSelezionato();
         if (genereSelezionato != null && !genereSelezionato.equals("Tutti")) {
             libri = libri.stream()
-                    .filter(libro -> libro.getGenere().toLowerCase().equals(genereSelezionato.toLowerCase()))
+                    .filter(libro -> libro.getGenere().equalsIgnoreCase(genereSelezionato))
                     .collect(Collectors.toList());
         }
 

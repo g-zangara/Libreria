@@ -235,9 +235,10 @@ public class DialogAggiungiModificaLibro extends JDialog {
             return 0;
         } else {
             try {
+                assert val != null;
                 return Integer.parseInt(val);
             } catch (NumberFormatException e) {
-                return 0; // Default a "da valutare" in caso di errore
+                return 0; // Default a "da valutare" in caso di errore, in teoria non dovrebbe mai arrivare qui
             }
         }
     }

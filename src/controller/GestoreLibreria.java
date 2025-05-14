@@ -1,7 +1,6 @@
 package controller;
 
 import model.Libro;
-import model.StatoLettura;
 import dao.LibroDAO;
 import dao.JsonLibroDAO;
 import dao.CsvLibroDAO;
@@ -23,8 +22,8 @@ public class GestoreLibreria {
 
     // Attributi del gestore
     private List<Libro> libri;
-    private LibroDAO jsonDAO;
-    private LibroDAO csvDAO;
+    private final LibroDAO jsonDAO;
+    private final LibroDAO csvDAO;
 
     /**
      * Costruttore privato per il pattern Singleton.
@@ -145,55 +144,6 @@ public class GestoreLibreria {
         String isbnLower = isbn.toLowerCase();
         return libri.stream()
                 .filter(libro -> libro.getIsbn().toLowerCase().contains(isbnLower))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Filtra libri per genere.
-     *
-     * @param genere Genere da filtrare (match esatto, case-insensitive)
-     * @return Lista di libri che corrispondono al filtro
-     */
-    public List<Libro> filtraPerGenere(String genere) {
-        if (genere == null || genere.trim().isEmpty() || genere.equalsIgnoreCase("Tutti")) {
-            return getLibri();
-        }
-
-        String genereLower = genere.toLowerCase();
-        return libri.stream()
-                .filter(libro -> libro.getGenere().toLowerCase().equals(genereLower))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Filtra libri per stato di lettura.
-     *
-     * @param statoLettura Stato di lettura da filtrare
-     * @return Lista di libri che corrispondono al filtro
-     */
-    public List<Libro> filtraPerStatoLettura(StatoLettura statoLettura) {
-        if (statoLettura == null) {
-            return getLibri();
-        }
-
-        return libri.stream()
-                .filter(libro -> libro.getStatoLettura() == statoLettura)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Filtra libri per valutazione.
-     *
-     * @param valutazione Valutazione da filtrare (0 = da valutare, 1-5 = stelle)
-     * @return Lista di libri che corrispondono al filtro
-     */
-    public List<Libro> filtraPerValutazione(int valutazione) {
-        if (valutazione < 0) {
-            return getLibri(); // Nessun filtro se valutazione è -1
-        }
-
-        return libri.stream()
-                .filter(libro -> libro.getValutazione() == valutazione)
                 .collect(Collectors.toList());
     }
 
