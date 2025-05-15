@@ -264,7 +264,7 @@ public class LibroView extends JFrame {
         bottonePulsantiContainer.add(panelCentro);
         bottonePulsantiContainer.add(Box.createHorizontalGlue());
         bottonePulsantiContainer.add(panelPersistenza);
-        bottonePulsantiContainer.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));  // 20px in basso!
+        bottonePulsantiContainer.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));
 
         // Scroll panel per i pulsanti
         JScrollPane scrollPanelInferiore = new JScrollPane(bottonePulsantiContainer,
