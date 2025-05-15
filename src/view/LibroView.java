@@ -196,12 +196,10 @@ public class LibroView extends JFrame {
     }
 
     private JPanel creaPanelInferiore() {
-        JPanel panelInferiore = new JPanel(new BorderLayout(10, 10));
+        JPanel panelInferiore = new JPanel(new BorderLayout());
 
         // Pulsanti per le operazioni sui libri
-        JPanel panelOperazioni = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(panelOperazioni, BoxLayout.X_AXIS);
-        panelOperazioni.setLayout(boxLayout);
+        JPanel panelOperazioni = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 10));
 
         btnAggiungi = new JButton("Aggiungi Libro");
         btnAggiungi.addActionListener(e -> mostraDialogAggiungiLibro());
@@ -211,9 +209,6 @@ public class LibroView extends JFrame {
 
         btnElimina = new JButton("Elimina Libro");
         btnElimina.addActionListener(e -> eliminaLibroSelezionato());
-
-        btnInfo = new JButton("Info");
-        btnInfo.addActionListener(e -> mostraInfoDialog());
 
         btnUndo = new JButton("Undo");
         btnUndo.setToolTipText("Annulla l'ultima operazione");
@@ -226,21 +221,19 @@ public class LibroView extends JFrame {
         btnRedo.setEnabled(false);
 
         panelOperazioni.add(btnAggiungi);
-        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnModifica);
-        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnElimina);
-        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnUndo);
-        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnRedo);
-        panelOperazioni.add(Box.createRigidArea(new Dimension(15, 0)));
-        panelOperazioni.add(btnInfo);
+
+        // Pulsante info
+        JPanel panelCentro = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 10));
+        btnInfo = new JButton("Info");
+        btnInfo.addActionListener(e -> mostraInfoDialog());
+        panelCentro.add(btnInfo);
 
         // Pulsanti per il salvataggio/caricamento
-        JPanel panelPersistenza = new JPanel();
-        BoxLayout boxLayoutPersistenza = new BoxLayout(panelPersistenza, BoxLayout.X_AXIS);
-        panelPersistenza.setLayout(boxLayoutPersistenza);
+        JPanel panelPersistenza = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 10));
 
         btnSalvaJSON = new JButton("Salva JSON");
         btnSalvaJSON.addActionListener(e -> salvaFile("JSON"));
@@ -257,27 +250,28 @@ public class LibroView extends JFrame {
         //Pulsante per pulire la libreria
         btnPulisciLibreria = new JButton("Pulisci Libreria");
         btnPulisciLibreria.addActionListener(e -> pulisciLibreria());
-
         panelPersistenza.add(btnSalvaJSON);
-        panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnSalvaCSV);
-        panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnCaricaJSON);
-        panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnCaricaCSV);
-        panelPersistenza.add(Box.createRigidArea(new Dimension(5, 0)));
         panelPersistenza.add(btnPulisciLibreria);
 
         // Contenitore per i pulsanti
-        JPanel bottonePulsantiContainer = new JPanel(new BorderLayout());
-        bottonePulsantiContainer.add(panelOperazioni, BorderLayout.WEST);
-        bottonePulsantiContainer.add(panelPersistenza, BorderLayout.EAST);
+        JPanel bottonePulsantiContainer = new JPanel();
+        bottonePulsantiContainer.setLayout(new BoxLayout(bottonePulsantiContainer, BoxLayout.X_AXIS));
+        bottonePulsantiContainer.add(panelOperazioni);
+        bottonePulsantiContainer.add(Box.createHorizontalGlue());
+        bottonePulsantiContainer.add(panelCentro);
+        bottonePulsantiContainer.add(Box.createHorizontalGlue());
+        bottonePulsantiContainer.add(panelPersistenza);
+        bottonePulsantiContainer.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 10));  // 20px in basso!
 
-        // Scroll pane per i pulsanti
-        JScrollPane scrollPanelInferiore = new JScrollPane(bottonePulsantiContainer);
-        scrollPanelInferiore.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPanelInferiore.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        // Scroll panel per i pulsanti
+        JScrollPane scrollPanelInferiore = new JScrollPane(bottonePulsantiContainer,
+                JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPanelInferiore.setBorder(null);
+        scrollPanelInferiore.getHorizontalScrollBar().setUnitIncrement(15);
 
         panelInferiore.add(scrollPanelInferiore, BorderLayout.CENTER);
 
