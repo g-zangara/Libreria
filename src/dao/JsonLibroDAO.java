@@ -63,6 +63,15 @@ public class JsonLibroDAO implements LibroDAO {
         List<Libro> libri = new ArrayList<>();
         File file = new File(percorsoFile);
 
+        // Verifica che il file abbia solo una estensione e che sia .json
+        String nomeFile = file.getName();
+        int ultimoPunto = nomeFile.lastIndexOf('.');
+        if (ultimoPunto == -1 || !nomeFile.substring(ultimoPunto + 1).equalsIgnoreCase("json") ||
+                nomeFile.substring(0, ultimoPunto).contains(".")) {
+            System.err.println("Formato file non valido: " + percorsoFile);
+            throw new IOException("Formato file non valido.\n Il file deve avere solo l'estensione .json senza estensioni multiple.");
+        }
+
         // Se il file non esiste, restituisce una lista vuota
         if (!file.exists()) {
             return libri;

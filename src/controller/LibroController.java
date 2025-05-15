@@ -4,12 +4,14 @@ import model.Libro;
 import model.StatoLettura;
 import view.LibroView;
 import strategy.*;
+import command.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  * Controller per gestire l'interazione tra il modello (Libro/GestoreLibreria) e la vista (LibroView).
@@ -19,6 +21,7 @@ public class LibroController {
 
     private final GestoreLibreria gestoreLibreria;
     private final LibroView view;
+    private final CommandManager commandManager;
 
     /**
      * Costruttore che inizializza il controller con il gestore libreria e la vista.
@@ -28,10 +31,12 @@ public class LibroController {
     public LibroController(LibroView view) {
         this.gestoreLibreria = GestoreLibreria.getInstance();
         this.view = view;
+        this.commandManager = new CommandManager();
     }
 
     /**
-     * Aggiunge un nuovo libro alla libreria.
+     * Aggiunge un nuovo libro alla libreria usando il pattern Command.
+     * Questo metodo è chiamato dalla vista e crea un comando AggiungiLibro.
      *
      * @param titolo Titolo del libro
      * @param autore Autore del libro
@@ -43,8 +48,22 @@ public class LibroController {
      */
     public boolean aggiungiLibro(String titolo, String autore, String isbn, String genere,
                                  int valutazione, StatoLettura statoLettura) {
-        Libro nuovoLibro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
-        boolean result = gestoreLibreria.aggiungiLibro(nuovoLibro);
+        Command comando = new AggiungiLibroCommand(this, titolo, autore, isbn, genere,
+                valutazione, statoLettura);
+        commandManager.executeCommand(comando);
+        aggiornaStatoPulsanti();
+        return true;
+    }
+
+    /**
+     * Metodo interno per aggiungere un libro senza creare un comando.
+     * Questo metodo è chiamato dai comandi AggiungiLibroCommand e EliminaLibroCommand (undo).
+     *
+     * @param libro Libro da aggiungere
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    public boolean aggiungiLibroInterno(Libro libro) {
+        boolean result = gestoreLibreria.aggiungiLibro(libro);
         if (result) {
             aggiornaTabella();
         }
@@ -52,7 +71,8 @@ public class LibroController {
     }
 
     /**
-     * Modifica un libro esistente nella libreria.
+     * Modifica un libro esistente nella libreria usando il pattern Command.
+     * Questo metodo è chiamato dalla vista e crea un comando ModificaLibro.
      *
      * @param libroSelezionato Libro da modificare
      * @param titolo Nuovo titolo
@@ -69,8 +89,23 @@ public class LibroController {
             return false;
         }
 
-        Libro nuovoLibro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
-        boolean result = gestoreLibreria.modificaLibro(libroSelezionato, nuovoLibro);
+        Command comando = new ModificaLibroCommand(this, libroSelezionato, titolo, autore, isbn,
+                genere, valutazione, statoLettura);
+        commandManager.executeCommand(comando);
+        aggiornaStatoPulsanti();
+        return true;
+    }
+
+    /**
+     * Metodo interno per modificare un libro senza creare un comando.
+     * Questo metodo è chiamato dal comando ModificaLibroCommand.
+     *
+     * @param vecchioLibro Libro da modificare
+     * @param nuovoLibro Libro con i nuovi dati
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    public boolean modificaLibroInterno(Libro vecchioLibro, Libro nuovoLibro) {
+        boolean result = gestoreLibreria.modificaLibro(vecchioLibro, nuovoLibro);
         if (result) {
             aggiornaTabella();
         }
@@ -78,17 +113,102 @@ public class LibroController {
     }
 
     /**
-     * Elimina un libro dalla libreria.
+     * Elimina un libro dalla libreria usando il pattern Command.
+     * Questo metodo è chiamato dalla vista e crea un comando EliminaLibro.
      *
      * @param libro Libro da eliminare
      * @return true se l'eliminazione è avvenuta con successo, false altrimenti
      */
     public boolean eliminaLibro(Libro libro) {
+        if (libro == null) {
+            return false;
+        }
+
+        Command comando = new EliminaLibroCommand(this, libro);
+        commandManager.executeCommand(comando);
+        aggiornaStatoPulsanti();
+        return true;
+    }
+
+    /**
+     * Metodo interno per eliminare un libro senza creare un comando.
+     * Questo metodo è chiamato dal comando EliminaLibroCommand.
+     *
+     * @param libro Libro da eliminare
+     * @return true se l'operazione è andata a buon fine, false altrimenti
+     */
+    public boolean eliminaLibroInterno(Libro libro) {
         boolean result = gestoreLibreria.eliminaLibro(libro);
         if (result) {
             aggiornaTabella();
         }
         return result;
+    }
+
+    /**
+     * Esegue l'operazione di undo (annulla l'ultima operazione).
+     *
+     * @return true se l'undo è stato eseguito, false se non ci sono operazioni da annullare
+     */
+    public boolean undo() {
+        boolean result = commandManager.undo();
+        aggiornaStatoPulsanti();
+        return result;
+    }
+
+    /**
+     * Esegue l'operazione di redo (ripristina l'ultima operazione annullata).
+     *
+     * @return true se il redo è stato eseguito, false se non ci sono operazioni da ripristinare
+     */
+    public boolean redo() {
+        boolean result = commandManager.redo();
+        aggiornaStatoPulsanti();
+        return result;
+    }
+
+    /**
+     * Verifica se è possibile eseguire un'operazione di undo.
+     *
+     * @return true se è possibile eseguire un undo, false altrimenti
+     */
+    public boolean canUndo() {
+        return commandManager.canUndo();
+    }
+
+    /**
+     * Verifica se è possibile eseguire un'operazione di redo.
+     *
+     * @return true se è possibile eseguire un redo, false altrimenti
+     */
+    public boolean canRedo() {
+        return commandManager.canRedo();
+    }
+
+    /**
+     * Ottiene la descrizione dell'ultima operazione eseguita (per tooltip undo).
+     *
+     * @return Descrizione dell'ultima operazione o null se non ci sono operazioni
+     */
+    public String getUndoDescription() {
+        return commandManager.getUndoDescription();
+    }
+
+    /**
+     * Ottiene la descrizione dell'ultima operazione annullata (per tooltip redo).
+     *
+     * @return Descrizione dell'ultima operazione annullata o null se non ci sono operazioni
+     */
+    public String getRedoDescription() {
+        return commandManager.getRedoDescription();
+    }
+
+    /**
+     * Aggiorna lo stato dei pulsanti undo/redo nella vista.
+     */
+    private void aggiornaStatoPulsanti() {
+        view.aggiornaStatoPulsantiUndoRedo(canUndo(), canRedo(),
+                getUndoDescription(), getRedoDescription());
     }
 
     /**
@@ -99,6 +219,8 @@ public class LibroController {
         view.aggiornaTabella(libri);
         view.aggiornaComboBoxGeneri(gestoreLibreria.getGeneriUnici());
         view.aggiornaComboBoxAutori(gestoreLibreria.getAutoriUnici());
+        // Inizializza lo stato dei pulsanti undo/redo
+        aggiornaStatoPulsanti();
     }
 
     /**
@@ -173,12 +295,13 @@ public class LibroController {
                         .collect(Collectors.toList());
             } catch (IllegalArgumentException e) {
                 // Ignora filtro non valido
+                System.err.println("Filtro non valido: " + statoLetturaSelezionato);
             }
         }
 
         // Filtro per valutazione
         int valutazioneSelezionata = view.getValutazioneSelezionata();
-        if (valutazioneSelezionata >= 0) { // Includi anche 0 (da valutare)
+        if (valutazioneSelezionata >= 0) {
             libri = libri.stream()
                     .filter(libro -> libro.getValutazione() == valutazioneSelezionata)
                     .collect(Collectors.toList());
@@ -281,21 +404,56 @@ public class LibroController {
                 gestoreLibreria.caricaLibriDaJson(percorsoFile);
             } else if ("CSV".equalsIgnoreCase(formato)) {
                 gestoreLibreria.caricaLibriDaCsv(percorsoFile);
+            }else {
+                //IN TEORIA QUI NON DOVREBBE MAI ARRIVARCI
+                System.err.println("Formato non supportato: " + formato);
+                return;
             }
+
             JOptionPane.showMessageDialog(view, "Libreria caricata con successo dal file: " + percorsoFile,
                     "Caricamento completato", JOptionPane.INFORMATION_MESSAGE);
             aggiornaTabella();
+
+            // Quando si carica una nuova libreria, si svuotano gli stack undo/redo
+            commandManager.clearStacks();
+            aggiornaStatoPulsanti();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(view, "Errore durante il caricamento della libreria: " + e.getMessage(),
-                    "Errore", JOptionPane.ERROR_MESSAGE);
+            mostraErroreConScrollSeNecessario("Errore durante il caricamento della libreria: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Mostra un messaggio di errore in un JOptionPane con scroll se il messaggio è lungo.
+     *
+     * @param messaggio Messaggio di errore da mostrare
+     */
+    private void mostraErroreConScrollSeNecessario(String messaggio) {
+        if (messaggio != null && messaggio.length() > 200) {
+            JTextArea textArea = new JTextArea(messaggio);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setEditable(false);
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(500, 300));
+
+            JOptionPane.showMessageDialog(view, scrollPane, "Errore di caricamento", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(view, messaggio, "Errore di caricamento", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
      * Pulisce la libreria, rimuovendo tutti i libri presenti.
+     * Svuota anche gli stack di undo e redo.
      */
     public void pulisciLibreria() {
         gestoreLibreria.pulisciLibreria();
         aggiornaTabella();
+
+        // Svuota gli stack undo/redo quando si pulisce la libreria
+        commandManager.clearStacks();
+        aggiornaStatoPulsanti();
     }
+
 }

@@ -34,8 +34,10 @@ public class LibroView extends JFrame {
     private JComboBox<String> comboOrdinamento;
     private JButton btnAggiungi, btnModifica, btnElimina;
     private JButton btnCerca, btnResetFiltri;
-    private JButton btnSalvaJSON, btnSalvaCSV, btnCaricaJSON, btnCaricaCSV, btnPulisciLibreria;
+    private JButton btnSalvaJSON, btnSalvaCSV, btnCaricaJSON, btnCaricaCSV;
+    private JButton btnPulisciLibreria;
     private JButton btnInfo;
+    private JButton btnUndo, btnRedo;
 
     /**
      * Costruttore che inizializza la vista.
@@ -213,12 +215,26 @@ public class LibroView extends JFrame {
         btnInfo = new JButton("Info");
         btnInfo.addActionListener(e -> mostraInfoDialog());
 
+        btnUndo = new JButton("Undo");
+        btnUndo.setToolTipText("Annulla l'ultima operazione");
+        btnUndo.addActionListener(e -> controller.undo());
+        btnUndo.setEnabled(false);
+
+        btnRedo = new JButton("Redo");
+        btnRedo.setToolTipText("Ripristina l'ultima operazione annullata");
+        btnRedo.addActionListener(e -> controller.redo());
+        btnRedo.setEnabled(false);
+
         panelOperazioni.add(btnAggiungi);
         panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnModifica);
         panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnElimina);
         panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
+        panelOperazioni.add(btnUndo);
+        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
+        panelOperazioni.add(btnRedo);
+        panelOperazioni.add(Box.createRigidArea(new Dimension(15, 0)));
         panelOperazioni.add(btnInfo);
 
         // Pulsanti per il salvataggio/caricamento
@@ -269,6 +285,33 @@ public class LibroView extends JFrame {
     }
 
     /**
+     * Aggiorna lo stato dei pulsanti Undo e Redo in base alla disponibilità delle operazioni.
+     *
+     * @param canUndo true se l'operazione di undo è disponibile
+     * @param canRedo true se l'operazione di redo è disponibile
+     * @param undoDescription descrizione dell'operazione di undo
+     * @param redoDescription descrizione dell'operazione di redo
+     */
+    public void aggiornaStatoPulsantiUndoRedo(boolean canUndo, boolean canRedo,
+                                              String undoDescription, String redoDescription) {
+        btnUndo.setEnabled(canUndo);
+        btnRedo.setEnabled(canRedo);
+
+        // Aggiorna i tooltip con la descrizione delle azioni
+        if (canUndo) {
+            btnUndo.setToolTipText("Annulla: " + undoDescription);
+        } else {
+            btnUndo.setToolTipText("Nessuna operazione da annullare");
+        }
+
+        if (canRedo) {
+            btnRedo.setToolTipText("Ripristina: " + redoDescription);
+        } else {
+            btnRedo.setToolTipText("Nessuna operazione da ripristinare");
+        }
+    }
+
+    /**
      * Mostra la finestra di dialogo delle informazioni sull'applicazione.
      */
     private void mostraInfoDialog() {
@@ -279,6 +322,7 @@ public class LibroView extends JFrame {
                 "- Cerca libri per titolo, autore o ISBN\n" +
                 "- Filtra per genere, autore, stato di lettura, valutazione\n" +
                 "- Ordina i libri secondo diversi criteri\n" +
+                "- Funzionalità Undo/Redo per annullare o ripristinare le operazioni\n" +
                 "- Salva e carica la tua libreria in formato JSON o CSV\n\n" +
                 "Autore: Progetto Demo Java";
 
@@ -624,7 +668,7 @@ public class LibroView extends JFrame {
     private void pulisciLibreria() {
         int conferma = JOptionPane.showConfirmDialog(this,
                 "Sei sicuro di voler pulire la libreria? Tutti i libri saranno rimossi.\n" +
-                        "Questa operazione non può essere annullata.",
+                        "Questa operazione non può essere annullata e cancellerà anche la cronologia di Undo/Redo.",
                 "Conferma pulizia libreria",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -637,4 +681,5 @@ public class LibroView extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
 }
