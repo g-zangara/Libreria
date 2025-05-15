@@ -35,6 +35,7 @@ public class LibroView extends JFrame {
     private JButton btnAggiungi, btnModifica, btnElimina;
     private JButton btnCerca, btnResetFiltri;
     private JButton btnSalvaJSON, btnSalvaCSV, btnCaricaJSON, btnCaricaCSV, btnPulisciLibreria;
+    private JButton btnInfo;
 
     /**
      * Costruttore che inizializza la vista.
@@ -209,11 +210,16 @@ public class LibroView extends JFrame {
         btnElimina = new JButton("Elimina Libro");
         btnElimina.addActionListener(e -> eliminaLibroSelezionato());
 
+        btnInfo = new JButton("Info");
+        btnInfo.addActionListener(e -> mostraInfoDialog());
+
         panelOperazioni.add(btnAggiungi);
         panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnModifica);
         panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
         panelOperazioni.add(btnElimina);
+        panelOperazioni.add(Box.createRigidArea(new Dimension(5, 0)));
+        panelOperazioni.add(btnInfo);
 
         // Pulsanti per il salvataggio/caricamento
         JPanel panelPersistenza = new JPanel();
@@ -260,6 +266,26 @@ public class LibroView extends JFrame {
         panelInferiore.add(scrollPanelInferiore, BorderLayout.CENTER);
 
         return panelInferiore;
+    }
+
+    /**
+     * Mostra la finestra di dialogo delle informazioni sull'applicazione.
+     */
+    private void mostraInfoDialog() {
+        String infoText = "Nome: Gestione Libreria Personale\n\n" +
+                "Versione: v1.0\n\n" +
+                "Descrizione:\n" +
+                "- Aggiungi, modifica e elimina i tuoi libri\n" +
+                "- Cerca libri per titolo, autore o ISBN\n" +
+                "- Filtra per genere, autore, stato di lettura, valutazione\n" +
+                "- Ordina i libri secondo diversi criteri\n" +
+                "- Salva e carica la tua libreria in formato JSON o CSV\n\n" +
+                "Autore: Progetto Demo Java";
+
+        JOptionPane.showMessageDialog(this,
+                infoText,
+                "Informazioni sull'applicazione",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
