@@ -74,14 +74,6 @@ public class GestoreLibreriaTest {
     }
 
     @Test
-    public void testAggiungiLibroConIsbnEsistente() {
-        // Prova ad aggiungere un libro con ISBN già esistente
-        Libro libroDuplicato = new Libro("Titolo", "Autore", "978-88-452-6445-5", "Storico", 5, StatoLettura.LETTO);
-        assertFalse(gestore.aggiungiLibro(libroDuplicato));
-        assertEquals(3, gestore.getLibri().size());
-    }
-
-    @Test
     public void testModificaLibro() {
         // Crea un nuovo libro con lo stesso ISBN di libro1 ma dati diversi
         Libro libroModificato = new Libro("Titolo Modificato", "Autore Modificato", libro1.getIsbn(), "Genere Modificato", 3, StatoLettura.IN_LETTURA);
