@@ -47,12 +47,12 @@ public class AggiungiLibroCommand implements Command {
      * Memorizza un riferimento al libro aggiunto per supportare l'operazione di undo.
      */
     @Override
-    public void execute() {
+    public boolean execute() {
         // Crea un nuovo libro con i dati forniti
         libroAggiunto = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
 
         // Aggiungi il libro tramite il controller
-        controller.aggiungiLibroInterno(libroAggiunto);
+        return controller.aggiungiLibroInterno(libroAggiunto);
     }
 
     /**

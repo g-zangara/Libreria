@@ -27,8 +27,8 @@ public class EliminaLibroCommand implements Command {
      * Esegue il comando eliminando il libro dalla libreria.
      */
     @Override
-    public void execute() {
-        controller.eliminaLibroInterno(libro);
+    public boolean execute() {
+        return controller.eliminaLibroInterno(libro);
     }
 
     /**

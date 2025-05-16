@@ -9,7 +9,7 @@ public interface Command {
     /**
      * Esegue il comando.
      */
-    void execute();
+    boolean execute();
 
     /**
      * Annulla l'esecuzione del comando.

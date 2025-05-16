@@ -50,9 +50,10 @@ public class LibroController {
                                  int valutazione, StatoLettura statoLettura) {
         Command comando = new AggiungiLibroCommand(this, titolo, autore, isbn, genere,
                 valutazione, statoLettura);
-        commandManager.executeCommand(comando);
-        aggiornaStatoPulsanti();
-        return true;
+        boolean result = commandManager.executeCommand(comando);
+        if(result)
+            aggiornaStatoPulsanti();
+        return result;
     }
 
     /**

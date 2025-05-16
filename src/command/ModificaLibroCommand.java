@@ -51,11 +51,11 @@ public class ModificaLibroCommand implements Command {
      * Crea una copia del libro originale per supportare l'operazione di undo.
      */
     @Override
-    public void execute() {
+    public boolean execute() {
         libroModificato = new Libro(nuovoTitolo, nuovoAutore, nuovoIsbn, nuovoGenere,
                 nuovaValutazione, nuovoStatoLettura);
 
-        controller.modificaLibroInterno(libroOriginale, libroModificato);
+        return controller.modificaLibroInterno(libroOriginale, libroModificato);
     }
 
     /**

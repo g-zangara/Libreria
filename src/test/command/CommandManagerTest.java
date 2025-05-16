@@ -30,8 +30,9 @@ public class CommandManagerTest {
         }
 
         @Override
-        public void execute() {
+        public boolean execute() {
             executed = true;
+            return true;
         }
 
         @Override

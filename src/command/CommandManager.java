@@ -26,10 +26,14 @@ public class CommandManager {
      *
      * @param command Comando da eseguire
      */
-    public void executeCommand(Command command) {
-        command.execute();
-        undoStack.push(command);
-        redoStack.clear();
+    public boolean executeCommand(Command command) {
+        boolean result = command.execute();
+        if(result){
+            undoStack.push(command);
+            redoStack.clear();
+            return true;
+        }
+        return false;
     }
 
     /**
