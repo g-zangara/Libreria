@@ -89,6 +89,11 @@ public class LibroController {
             return false;
         }
 
+        if (!isbn.equals(libroSelezionato.getIsbn())) {
+            System.err.println("ISBN deve essere uguale in operazione di modifica.");
+            return false;
+        }
+
         Command comando = new ModificaLibroCommand(this, libroSelezionato, titolo, autore, isbn,
                 genere, valutazione, statoLettura);
         commandManager.executeCommand(comando);
