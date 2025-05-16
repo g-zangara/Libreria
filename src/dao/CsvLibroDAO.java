@@ -102,7 +102,14 @@ public class CsvLibroDAO implements LibroDAO {
                                 (libro.getTitolo().isEmpty() ? "titolo mancante" : libro.getTitolo()) +
                                 "): dati incompleti o non validi");
                     } else {
-                        libri.add(libro);
+                        // Libro valido, verifica duplicati o isbn già presente
+                        if(libri.contains(libro)){
+                            errori.add("Riga " + numeroRiga + " (" +
+                                    (libro.getTitolo().isEmpty() ? "titolo mancante" : libro.getTitolo()) +
+                                    "): libro già presente o isbn duplicato");
+                        }else{
+                            libri.add(libro);
+                        }
                     }
                 }
                 numeroRiga++;

@@ -176,4 +176,44 @@ public class LibroDAOTest {
         assertTrue(libriCaricati.isEmpty());
     }
 
+    @Test
+    public void testJsonCaricaLibriConStessoIsbn() throws IOException {
+        // Crea una lista di libri con ISBN duplicati
+        List<Libro> libriDuplicati = new ArrayList<>();
+        libriDuplicati.add(new Libro("Libro 1", "Autore 1", "1234567890", "Genere 1", 5, StatoLettura.LETTO));
+        libriDuplicati.add(new Libro("Libro 2", "Autore 2", "1234567890", "Genere 2", 4, StatoLettura.IN_LETTURA));
+
+        // Salva i libri in formato JSON
+        jsonDAO.salvaLibri(libriDuplicati, jsonFilePath);
+
+        // Verifica che venga lanciata un'eccezione durante il caricamento
+        IOException exception = assertThrows(IOException.class, () -> {
+            jsonDAO.caricaLibri(jsonFilePath);
+        });
+
+        // Controlla che il messaggio dell'eccezione contenga informazioni sui duplicati
+        String expectedMessage = "libro già presente o isbn duplicato";
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+    public void testCsvCaricaLibriConStessoIsbn() throws IOException {
+        // Crea una lista di libri con ISBN duplicati
+        List<Libro> libriDuplicati = new ArrayList<>();
+        libriDuplicati.add(new Libro("Libro 1", "Autore 1", "1234567890", "Genere 1", 5, StatoLettura.LETTO));
+        libriDuplicati.add(new Libro("Libro 2", "Autore 2", "1234567890", "Genere 2", 4, StatoLettura.IN_LETTURA));
+
+        // Salva i libri in formato CSV
+        csvDAO.salvaLibri(libriDuplicati, csvFilePath);
+
+        // Verifica che venga lanciata un'eccezione durante il caricamento
+        IOException exception = assertThrows(IOException.class, () -> {
+            csvDAO.caricaLibri(csvFilePath);
+        });
+
+        // Controlla che il messaggio dell'eccezione contenga informazioni sui duplicati
+        String expectedMessage = "libro già presente o isbn duplicato";
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
 }
