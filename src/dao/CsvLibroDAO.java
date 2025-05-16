@@ -77,7 +77,8 @@ public class CsvLibroDAO implements LibroDAO {
 
         // Se il file non esiste, restituisce una lista vuota
         if (!file.exists()) {
-            return libri;
+            System.err.println("File non trovato: " + percorsoFile);
+            throw new IOException("File non trovato:\n" + percorsoFile);
         }
 
         List<String> errori = new ArrayList<>();

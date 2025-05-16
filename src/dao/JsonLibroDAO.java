@@ -74,7 +74,8 @@ public class JsonLibroDAO implements LibroDAO {
 
         // Se il file non esiste, restituisce una lista vuota
         if (!file.exists()) {
-            return libri;
+            System.err.println("File non trovato: " + percorsoFile);
+            throw new IOException("File non trovato:\n" + percorsoFile);
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {

@@ -107,6 +107,8 @@ public class DialogAggiungiModificaLibro extends JDialog {
             campoTitolo.setText(libro.getTitolo());
             campoAutore.setText(libro.getAutore());
             campoIsbn.setText(libro.getIsbn());
+            campoIsbn.setEnabled(false);
+            campoIsbn.setToolTipText("Non si può modificare l'ISBN di un libro esistente!");
             campoGenere.setText(libro.getGenere());
 
             // Imposta la valutazione corretta
