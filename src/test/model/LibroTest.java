@@ -80,11 +80,9 @@ public class LibroTest {
     public void testIsValidIsbn() {
         assertTrue(libro.isValidIsbn());
 
-        libro.setIsbn("");
-        assertFalse(libro.isValidIsbn());
+        assertThrows(IllegalArgumentException.class, () -> libro.setIsbn(""));
 
-        libro.setIsbn("abcd");
-        assertFalse(libro.isValidIsbn());
+        assertThrows(IllegalArgumentException.class, () -> libro.setIsbn("abcabc"));
 
         libro.setIsbn("12345-678-90");
         assertTrue(libro.isValidIsbn());
@@ -94,65 +92,98 @@ public class LibroTest {
     public void testIsValidTitolo() {
         assertTrue(libro.isValidTitolo());
 
-        libro.setTitolo("");
-        assertFalse(libro.isValidTitolo());
+        assertThrows(IllegalArgumentException.class, () -> libro.setTitolo(""));
 
-        libro.setTitolo("  ");
-        assertFalse(libro.isValidTitolo());
+        assertThrows(IllegalArgumentException.class, () -> libro.setTitolo("   "));
 
-        libro.setTitolo(null);
-        assertFalse(libro.isValidTitolo());
+        assertThrows(IllegalArgumentException.class, () -> libro.setTitolo(null));
+
     }
 
     @Test
     public void testIsValidAutore() {
         assertTrue(libro.isValidAutore());
 
-        libro.setAutore("");
-        assertFalse(libro.isValidAutore());
+        assertThrows(IllegalArgumentException.class, () -> libro.setAutore(""));
 
-        libro.setAutore("  ");
-        assertFalse(libro.isValidAutore());
+        assertThrows(IllegalArgumentException.class, () -> libro.setAutore("   "));
 
-        libro.setAutore(null);
-        assertFalse(libro.isValidAutore());
+        assertThrows(IllegalArgumentException.class, () -> libro.setAutore(null));
     }
 
     @Test
     public void testIsValidGenere() {
         assertTrue(libro.isValidGenere());
 
-        libro.setGenere("");
-        assertFalse(libro.isValidGenere());
+        assertThrows(IllegalArgumentException.class, () -> libro.setGenere(""));
 
-        libro.setGenere("  ");
-        assertFalse(libro.isValidGenere());
+        assertThrows(IllegalArgumentException.class, () -> libro.setGenere("   "));
 
-        libro.setGenere(null);
-        assertFalse(libro.isValidGenere());
+        assertThrows(IllegalArgumentException.class, () -> libro.setGenere(null));
     }
 
     @Test
-    public void testIsValid() {
-        assertTrue(libro.isValid());
+    public void testIsValidValutazione() {
+        assertTrue(libro.isValidValutazione());
 
-        libro.setTitolo("");
-        assertFalse(libro.isValid());
+        assertThrows(IllegalArgumentException.class, () -> libro.setValutazione(-1));
 
-        libro.setTitolo("Titolo");
-        libro.setAutore("");
-        assertFalse(libro.isValid());
+        assertThrows(IllegalArgumentException.class, () -> libro.setValutazione(6));
 
-        libro.setAutore("Autore");
-        libro.setIsbn("abcd");
-        assertFalse(libro.isValid());
+        libro.setValutazione(0);
+        assertTrue(libro.isValidValutazione());
+    }
 
-        libro.setIsbn("12345");
-        libro.setGenere("");
-        assertFalse(libro.isValid());
+    @Test
+    public void testIsValidStatoLettura() {
+        assertTrue(libro.isValidStatoLettura());
 
-        libro.setGenere("Genere");
-        assertTrue(libro.isValid());
+        assertThrows(IllegalArgumentException.class, () -> libro.setStatoLettura(null));
+
+        libro.setStatoLettura(StatoLettura.DA_LEGGERE);
+        assertTrue(libro.isValidStatoLettura());
+    }
+
+    @Test
+    public void testCostruttoreConCampiNonValidi() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("", "Autore", "123-456-789", "Genere", 3, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", null, "123-456-789", "Genere", 3, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", "Autore", "ABC-123", "Genere", 3, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", "Autore", "123-456-789", "", 3, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", "Autore", "123-456-789", "Genere", -1, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", "Autore", "123-456-789", "Genere", 6, StatoLettura.LETTO)
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                new Libro("Titolo", "Autore", "123-456-789", "Genere", 3, null)
+        );
+    }
+
+    @Test
+    public void testSettersConValoriValidi() {
+        assertDoesNotThrow(() -> libro.setTitolo("Nuovo titolo"));
+        assertDoesNotThrow(() -> libro.setAutore("Nuovo autore"));
+        assertDoesNotThrow(() -> libro.setIsbn("978-3-16-148410-0"));
+        assertDoesNotThrow(() -> libro.setGenere("Narrativa"));
+        assertDoesNotThrow(() -> libro.setValutazione(5));
+        assertDoesNotThrow(() -> libro.setValutazione(0)); // accettabile come "da valutare"
+        assertDoesNotThrow(() -> libro.setStatoLettura(StatoLettura.IN_LETTURA));
     }
 
     @Test
@@ -160,7 +191,7 @@ public class LibroTest {
         Libro libro2 = new Libro("Altro Titolo", "Altro Autore", libro.getIsbn(), "Altro Genere", 2, StatoLettura.DA_LEGGERE);
         assertEquals(libro, libro2); // Stessi ISBN -> libri uguali
 
-        libro2.setIsbn("altro-isbn");
+        libro2.setIsbn("543-3454-323-12");
         assertNotEquals(libro, libro2); // ISBN diversi -> libri diversi
 
         assertNotEquals(libro, null);

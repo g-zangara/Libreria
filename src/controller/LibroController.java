@@ -235,7 +235,7 @@ public class LibroController {
      * @param testoCerca Testo di ricerca
      * @param tipoCerca Tipo di ricerca (titolo, autore, isbn)
      */
-    public void cercaLibri(String testoCerca, String tipoCerca) {
+    public List<Libro> cercaLibri(String testoCerca, String tipoCerca) {
         List<Libro> risultato;
 
         if (testoCerca == null || testoCerca.trim().isEmpty()) {
@@ -263,6 +263,8 @@ public class LibroController {
         risultato = applicaOrdinamento(risultato);
 
         view.aggiornaTabella(risultato);
+
+        return risultato;
     }
 
     /**
@@ -362,6 +364,8 @@ public class LibroController {
     public void aggiornaTabella() {
         // Ottiene la lista dei libri
         List<Libro> libri = gestoreLibreria.getLibri();
+
+        libri = cercaLibri(view.getCampoCerca(), view.getCampoTipoCerca());
 
         // Applica i filtri
         libri = applicaFiltri(libri);

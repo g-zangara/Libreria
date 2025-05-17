@@ -251,12 +251,12 @@ public class JsonLibroDAO implements LibroDAO {
             }
         }
 
-        // Crea il libro
-        Libro libro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
-
-        // Verifica che tutti i campi obbligatori siano validi
-        if (!libro.isValid()) {
+        Libro libro;
+        try {
+            libro = new Libro(titolo, autore, isbn, genere, valutazione, statoLettura);
+        } catch (IllegalArgumentException e) {
             System.err.println("JSON libro non valido: " + jsonObject);
+            System.err.println("Errore nella creazione del libro: " + e.getMessage());
             return null;
         }
 

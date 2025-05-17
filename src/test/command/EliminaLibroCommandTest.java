@@ -59,7 +59,7 @@ public class EliminaLibroCommandTest {
     @BeforeEach
     public void setUp() {
         controller = new TestLibroController();
-        libro = new Libro("Test Libro", "Test Autore", "TEST-ISBN", "Test Genere", 4, StatoLettura.LETTO);
+        libro = new Libro("Test Libro", "Test Autore", "123-23", "Test Genere", 4, StatoLettura.LETTO);
         command = new EliminaLibroCommand(controller, libro);
     }
 

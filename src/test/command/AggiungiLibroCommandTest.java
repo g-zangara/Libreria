@@ -65,7 +65,7 @@ public class AggiungiLibroCommandTest {
                 controller,
                 "Nuovo Libro",
                 "Nuovo Autore",
-                "NUOVO-ISBN",
+                "123-456-789",
                 "Nuovo Genere",
                 4,
                 StatoLettura.DA_LEGGERE
@@ -88,7 +88,7 @@ public class AggiungiLibroCommandTest {
         assertNotNull(libroAggiunto);
         assertEquals("Nuovo Libro", libroAggiunto.getTitolo());
         assertEquals("Nuovo Autore", libroAggiunto.getAutore());
-        assertEquals("NUOVO-ISBN", libroAggiunto.getIsbn());
+        assertEquals("123-456-789", libroAggiunto.getIsbn());
         assertEquals("Nuovo Genere", libroAggiunto.getGenere());
         assertEquals(4, libroAggiunto.getValutazione());
         assertEquals(StatoLettura.DA_LEGGERE, libroAggiunto.getStatoLettura());

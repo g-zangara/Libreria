@@ -22,10 +22,10 @@ public class OrdinatoreLibroStrategyTest {
     public void setUp() {
         libri = new ArrayList<>();
 
-        libro1 = new Libro("La Divina Commedia", "Dante Alighieri", "ISBN1", "Poesia", 5, StatoLettura.LETTO);
-        libro2 = new Libro("1984", "George Orwell", "ISBN2", "Distopico", 4, StatoLettura.LETTO);
-        libro3 = new Libro("Il Nome della Rosa", "Umberto Eco", "ISBN3", "Storico", 3, StatoLettura.IN_LETTURA);
-        libro4 = new Libro("Anna Karenina", "Lev Tolstoj", "ISBN4", "Romanzo", 0, StatoLettura.DA_LEGGERE);
+        libro1 = new Libro("La Divina Commedia", "Dante Alighieri", "123-432342", "Poesia", 5, StatoLettura.LETTO);
+        libro2 = new Libro("1984", "George Orwell", "456-6543", "Distopico", 4, StatoLettura.LETTO);
+        libro3 = new Libro("Il Nome della Rosa", "Umberto Eco", "789-5432343-32", "Storico", 3, StatoLettura.IN_LETTURA);
+        libro4 = new Libro("Anna Karenina", "Lev Tolstoj", "722-34-3425-4", "Romanzo", 0, StatoLettura.DA_LEGGERE);
 
         // Aggiunta dei libri in ordine casuale
         libri.add(libro1); // Dante Alighieri
@@ -116,8 +116,8 @@ public class OrdinatoreLibroStrategyTest {
     public void testCaseSensitivity() {
         // Crea libri con titoli che differiscono solo per maiuscole/minuscole
         List<Libro> libriCase = new ArrayList<>();
-        Libro libroA = new Libro("aaa", "Autore1", "ISBN-A", "Genere", 1, StatoLettura.LETTO);
-        Libro libroB = new Libro("AAA", "Autore2", "ISBN-B", "Genere", 2, StatoLettura.LETTO);
+        Libro libroA = new Libro("aaa", "Autore1", "123-123-342-213", "Genere", 1, StatoLettura.LETTO);
+        Libro libroB = new Libro("AAA", "Autore2", "4444-566-4534", "Genere", 2, StatoLettura.LETTO);
         libriCase.add(libroA);
         libriCase.add(libroB);
 
@@ -133,8 +133,8 @@ public class OrdinatoreLibroStrategyTest {
 
         // Test ordinamento autore A-Z (case insensitive)
         libriCase.clear();
-        Libro libroC = new Libro("Titolo1", "autore", "ISBN-C", "Genere", 1, StatoLettura.LETTO);
-        Libro libroD = new Libro("Titolo2", "AUTORE", "ISBN-D", "Genere", 2, StatoLettura.LETTO);
+        Libro libroC = new Libro("Titolo1", "autore", "213-4342-454-12-3", "Genere", 1, StatoLettura.LETTO);
+        Libro libroD = new Libro("Titolo2", "AUTORE", "54546-434-23-432", "Genere", 2, StatoLettura.LETTO);
         libriCase.add(libroC);
         libriCase.add(libroD);
 

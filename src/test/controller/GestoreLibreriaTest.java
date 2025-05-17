@@ -103,15 +103,15 @@ public class GestoreLibreriaTest {
         gestoreTest.pulisciLibreria();
 
         // Aggiungi un libro conosciuto per assicurarci che la libreria non sia vuota
-        Libro libroEsistente = new Libro("Libro Test", "Autore Test", "ISBN-TEST-123", "Genere Test", 3, StatoLettura.LETTO);
+        Libro libroEsistente = new Libro("Libro Test", "Autore Test", "987-654-123", "Genere Test", 3, StatoLettura.LETTO);
         gestoreTest.aggiungiLibro(libroEsistente);
 
         // Verifica che la libreria contenga esattamente un libro
         assertEquals(1, gestoreTest.getLibri().size(), "La libreria dovrebbe contenere esattamente un libro");
 
         // Crea un libro con ISBN diverso che sicuramente non esiste nella libreria
-        Libro libroInesistente = new Libro("Non Esiste", "Autore", "ISBN-SICURO-NON-ESISTE-456", "Genere", 1, StatoLettura.DA_LEGGERE);
-        Libro nuovoLibro = new Libro("Nuovo", "Autore Nuovo", "ISBN-nuovo-789", "Genere Nuovo", 2, StatoLettura.LETTO);
+        Libro libroInesistente = new Libro("Non Esiste", "Autore", "123-789-456", "Genere", 1, StatoLettura.DA_LEGGERE);
+        Libro nuovoLibro = new Libro("Nuovo", "Autore Nuovo", "123-789", "Genere Nuovo", 2, StatoLettura.LETTO);
 
         // Verifica che il libro non esista prima del tentativo di modifica
         List<Libro> libriPrima = gestoreTest.getLibri();
@@ -297,7 +297,7 @@ public class GestoreLibreriaTest {
     @Test
     public void testGetGeneriUnici() {
         // Aggiungi un libro con un genere duplicato
-        Libro libro4 = new Libro("Altro libro", "Altro Autore", "ISBN-altro", "Storico", 3, StatoLettura.DA_LEGGERE);
+        Libro libro4 = new Libro("Altro libro", "Altro Autore", "123-123-123-123", "Storico", 3, StatoLettura.DA_LEGGERE);
         gestore.aggiungiLibro(libro4);
 
         // Verifica i generi unici
@@ -311,7 +311,7 @@ public class GestoreLibreriaTest {
     @Test
     public void testGetAutoriUnici() {
         // Aggiungi un libro con un autore duplicato
-        Libro libro4 = new Libro("Altro libro di Eco", "Umberto Eco", "ISBN-altro", "Romanzo", 3, StatoLettura.DA_LEGGERE);
+        Libro libro4 = new Libro("Altro libro di Eco", "Umberto Eco", "453-6543-321-3212", "Romanzo", 3, StatoLettura.DA_LEGGERE);
         gestore.aggiungiLibro(libro4);
 
         // Verifica gli autori unici

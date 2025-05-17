@@ -607,6 +607,25 @@ public class LibroView extends JFrame {
         return (String) comboGenere.getSelectedItem();
     }
 
+
+    /**
+     * Ottiene il tipo di ricerca selezionato nella combo box.
+     *
+     * @return Tipo di ricerca selezionato
+     */
+    public String getCampoTipoCerca() {
+        return (String) comboTipoCerca.getSelectedItem();
+    }
+
+    /**
+     * Ottiene il testo inserito nel campo di ricerca.
+     *
+     * @return Testo di ricerca
+     */
+    public String getCampoCerca() {
+        return campoCerca.getText();
+    }
+
     /**
      * Ottiene l'autore selezionato nella combo box.
      *

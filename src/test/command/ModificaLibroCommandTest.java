@@ -68,7 +68,7 @@ public class ModificaLibroCommandTest {
         libroOriginale = new Libro(
                 "Titolo Originale",
                 "Autore Originale",
-                "ISBN-Originale",
+                "123-123",
                 "Genere Originale",
                 3,
                 StatoLettura.LETTO
@@ -80,7 +80,7 @@ public class ModificaLibroCommandTest {
                 libroOriginale,
                 "Titolo Modificato",
                 "Autore Modificato",
-                "ISBN-Modificato",
+                "123-456",
                 "Genere Modificato",
                 5,
                 StatoLettura.IN_LETTURA
@@ -102,7 +102,7 @@ public class ModificaLibroCommandTest {
         assertNotNull(libroModificato);
         assertEquals("Titolo Modificato", libroModificato.getTitolo());
         assertEquals("Autore Modificato", libroModificato.getAutore());
-        assertEquals("ISBN-Modificato", libroModificato.getIsbn());
+        assertEquals("123-456", libroModificato.getIsbn());
         assertEquals("Genere Modificato", libroModificato.getGenere());
         assertEquals(5, libroModificato.getValutazione());
         assertEquals(StatoLettura.IN_LETTURA, libroModificato.getStatoLettura());
@@ -131,7 +131,7 @@ public class ModificaLibroCommandTest {
         assertNotNull(libroOriginaleRipristinato);
         assertEquals("Titolo Originale", libroOriginaleRipristinato.getTitolo());
         assertEquals("Autore Originale", libroOriginaleRipristinato.getAutore());
-        assertEquals("ISBN-Originale", libroOriginaleRipristinato.getIsbn());
+        assertEquals("123-123", libroOriginaleRipristinato.getIsbn());
         assertEquals("Genere Originale", libroOriginaleRipristinato.getGenere());
         assertEquals(3, libroOriginaleRipristinato.getValutazione());
         assertEquals(StatoLettura.LETTO, libroOriginaleRipristinato.getStatoLettura());

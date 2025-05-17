@@ -31,6 +31,8 @@ public class Libro {
         this.genere = genere;
         this.valutazione = valutazione;
         this.statoLettura = statoLettura;
+        if(!isValid())
+            throw new IllegalArgumentException("I dati del libro non sono validi.");
     }
 
     /**
@@ -51,6 +53,9 @@ public class Libro {
     }
 
     public void setTitolo(String titolo) {
+        if (titolo == null || titolo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il titolo non può essere vuoto.");
+        }
         this.titolo = titolo;
     }
 
@@ -59,6 +64,9 @@ public class Libro {
     }
 
     public void setAutore(String autore) {
+        if (autore == null || autore.trim().isEmpty()) {
+            throw new IllegalArgumentException("L'autore non può essere vuoto.");
+        }
         this.autore = autore;
     }
 
@@ -67,6 +75,9 @@ public class Libro {
     }
 
     public void setIsbn(String isbn) {
+        if (isbn == null || isbn.trim().isEmpty() || !isbn.matches("^[0-9\\-]+$")) {
+            throw new IllegalArgumentException("ISBN non valido. Deve contenere solo numeri e trattini.");
+        }
         this.isbn = isbn;
     }
 
@@ -75,6 +86,9 @@ public class Libro {
     }
 
     public void setGenere(String genere) {
+        if (genere == null || genere.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il genere non può essere vuoto.");
+        }
         this.genere = genere;
     }
 
@@ -96,6 +110,9 @@ public class Libro {
     }
 
     public void setValutazione(int valutazione) {
+        if (valutazione < 0 || valutazione > 5) {
+            throw new IllegalArgumentException("La valutazione deve essere compresa tra 0 e 5.");
+        }
         this.valutazione = valutazione;
     }
 
@@ -104,6 +121,9 @@ public class Libro {
     }
 
     public void setStatoLettura(StatoLettura statoLettura) {
+        if (statoLettura == null) {
+            throw new IllegalArgumentException("Lo stato di lettura non può essere nullo.");
+        }
         this.statoLettura = statoLettura;
     }
 
@@ -156,13 +176,33 @@ public class Libro {
     }
 
     /**
+     * Verifica se la valutazione è valida.
+     * La valutazione deve essere compresa tra 0 e 5.
+     *
+     * @return true se la valutazione è valida, false altrimenti
+     */
+    public boolean isValidValutazione() {
+        return valutazione >= 0 && valutazione <= 5;
+    }
+
+    /**
+     * Verifica se lo stato di lettura è valido.
+     *
+     * @return true se lo stato di lettura è valido, false altrimenti
+     */
+    public boolean isValidStatoLettura() {
+        return statoLettura != null;
+    }
+
+    /**
      * Verifica se tutti i campi obbligatori sono validi.
      *
      * @return true se tutti i campi sono validi, false altrimenti
      */
     public boolean isValid() {
         return isValidTitolo() && isValidAutore() &&
-                isValidIsbn() && isValidGenere();
+                isValidIsbn() && isValidGenere() &&
+                isValidValutazione() && isValidStatoLettura();
     }
 
     @Override
