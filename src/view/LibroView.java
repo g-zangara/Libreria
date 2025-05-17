@@ -93,7 +93,7 @@ public class LibroView extends JFrame {
         campoCerca = new JTextField(15);
         comboTipoCerca = new JComboBox<>(new String[]{"Titolo", "Autore", "ISBN"});
         btnCerca = new JButton("Cerca");
-        btnCerca.addActionListener(e -> controller.cercaLibri(campoCerca.getText(), (String) comboTipoCerca.getSelectedItem()));
+        btnCerca.addActionListener(e -> controller.aggiornaTabella());
 
         panelRicerca.add(new JLabel("Cerca per:"));
         panelRicerca.add(comboTipoCerca);
@@ -137,7 +137,7 @@ public class LibroView extends JFrame {
         panelOrdinamento.setBorder(BorderFactory.createTitledBorder("Ordinamento"));
 
         comboOrdinamento = new JComboBox<>(new String[]{
-                "Titolo (A-Z)", "Titolo (Z-A)",
+                "Predefinito", "Titolo (A-Z)", "Titolo (Z-A)",
                 "Autore (A-Z)", "Autore (Z-A)",
                 "Valutazione (1-5)", "Valutazione (5-1)"
         });

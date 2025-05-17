@@ -235,7 +235,7 @@ public class LibroController {
      * @param testoCerca Testo di ricerca
      * @param tipoCerca Tipo di ricerca (titolo, autore, isbn)
      */
-    public List<Libro> cercaLibri(String testoCerca, String tipoCerca) {
+    private List<Libro> cercaLibri(String testoCerca, String tipoCerca) {
         List<Libro> risultato;
 
         if (testoCerca == null || testoCerca.trim().isEmpty()) {
@@ -261,8 +261,6 @@ public class LibroController {
 
         // Applica l'ordinamento selezionato
         risultato = applicaOrdinamento(risultato);
-
-        view.aggiornaTabella(risultato);
 
         return risultato;
     }
@@ -347,6 +345,9 @@ public class LibroController {
                     break;
                 case "Valutazione (5-1)":
                     strategy = new OrdinaValutazioneDescStrategy();
+                    break;
+                default:
+                    // Nessun ordinamento selezionato
                     break;
             }
 
