@@ -47,7 +47,6 @@ Il progetto segue il pattern **MVC (Model-View-Controller)** e fa uso dei seguen
 ### 💻 Interfaccia Grafica (Swing)
 
 * GUI user-friendly e responsive
-* Operazioni drag-and-drop
 * Feedback visivo per le operazioni
 
 ### 🔄 Undo/Redo
